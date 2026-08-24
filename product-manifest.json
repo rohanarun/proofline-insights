@@ -1,0 +1,979 @@
+{
+  "schemaVersion": 1,
+  "release": {
+    "productVersion": "0.1.0",
+    "backendRelease": "v0.4.2",
+    "backendCommit": "20c4a704c77cbbbff1da995e1d91b937625a8aa4",
+    "backendSourceSnapshotSha256": "d0b7b1079d4924eb7369c788a979a707d45bb63470290e6ac33ee5662d78f69f",
+    "generatedAt": "2026-08-24T00:00:00.000Z",
+    "generator": "managed-oss-cloud/scripts/generate-product-repositories.mjs"
+  },
+  "product": {
+    "slug": "proofline-insights",
+    "command": "proofline-insights",
+    "mcpPrefix": "proofline_insights",
+    "environmentPrefix": "PROOFLINE_INSIGHTS",
+    "name": "Proofline Insights",
+    "tagline": "Metrics, observations, dashboards, and immutable reporting clocks with cited explanations.",
+    "repository": "https://github.com/rohanarun/proofline-insights",
+    "license": "MIT",
+    "accent": "#62b8ff",
+    "accentDark": "#28649c"
+  },
+  "module": {
+    "id": "insights",
+    "category": "Business intelligence",
+    "description": "Model metrics, observations, dashboards, and immutable reporting clocks before asking a model for cited explanations or hypotheses.",
+    "minimumHostedPlan": "scale",
+    "resourceClass": "high",
+    "resourceRequirements": {
+      "class": "high",
+      "minimumCpuMillicores": 650,
+      "minimumMemoryMiB": 1024,
+      "includedStorageGb": 20,
+      "recommendedWorkerConcurrency": 3
+    },
+    "recordTypes": [
+      "insight-source",
+      "insight-metric",
+      "metric-observation",
+      "insight-dashboard",
+      "insight-chart",
+      "insight-alert-rule",
+      "insight-snapshot",
+      "ai-proposal-request",
+      "additive-command-receipt"
+    ],
+    "aiCapabilities": [
+      "Measurement-clock provenance",
+      "Hypotheses separated from facts",
+      "No autonomous alert or metric mutation"
+    ]
+  },
+  "backend": {
+    "defaultUrl": "https://cloud.getsupers.com",
+    "workspaceEndpoint": "/api/suite/workspace",
+    "actionEndpointPattern": "/api/suite/modules/insights/actions/{actionId}",
+    "authentication": "Bearer API token",
+    "databaseBoundary": "All shared database access and tenant isolation remain behind the managed-oss-cloud API."
+  },
+  "cleanRoom": {
+    "statement": "Original clean-room implementation of the business intelligence software category, designed and written independently.",
+    "sourceBoundary": "Public category behavior informed requirements; implementation and product identity are original."
+  },
+  "actions": [
+    {
+      "id": "source-register",
+      "moduleId": "insights",
+      "title": "Register governed data source",
+      "description": "Register source identity, ownership, refresh cadence, and provenance without storing a credential.",
+      "operation": "command",
+      "recordType": "insight-source",
+      "requiredFields": [
+        "name",
+        "kind",
+        "ownerRef",
+        "refreshCadence",
+        "idempotencyKey"
+      ],
+      "engine": "additive",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "name",
+          "kind",
+          "ownerRef",
+          "refreshCadence",
+          "idempotencyKey"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "description": "Source name."
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "table",
+              "database-view",
+              "file-import",
+              "manual"
+            ],
+            "description": "Source kind."
+          },
+          "ownerRef": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Accountable workspace identity."
+          },
+          "refreshCadence": {
+            "type": "string",
+            "enum": [
+              "manual",
+              "hourly",
+              "daily",
+              "weekly"
+            ],
+            "description": "Expected refresh cadence."
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9._:-]{16,200}$",
+            "description": "A retry-safe key unique to this logical mutation."
+          }
+        },
+        "additionalProperties": false
+      },
+      "exampleInput": {
+        "name": "Revenue ledger",
+        "kind": "table",
+        "ownerRef": "user-owner-0001",
+        "refreshCadence": "daily",
+        "idempotencyKey": "insights.source-register.example-0001"
+      },
+      "requiredScope": "write",
+      "mcpToolName": "insights_source_register",
+      "cliExample": "supersuite action insights source-register '{\"name\":\"Revenue ledger\",\"kind\":\"table\",\"ownerRef\":\"user-owner-0001\",\"refreshCadence\":\"daily\",\"idempotencyKey\":\"insights.source-register.example-0001\"}'",
+      "risk": "low",
+      "destructive": false,
+      "externalEffect": "none",
+      "idempotent": true,
+      "requiresApproval": false,
+      "supportsDryRun": false,
+      "minimumRole": "member",
+      "backendMcpToolName": "insights_source_register",
+      "productMcpToolName": "proofline_insights_source_register",
+      "productCliExample": "proofline-insights action source-register '{\"name\":\"Revenue ledger\",\"kind\":\"table\",\"ownerRef\":\"user-owner-0001\",\"refreshCadence\":\"daily\",\"idempotencyKey\":\"insights.source-register.example-0001\"}'"
+    },
+    {
+      "id": "metric-define",
+      "moduleId": "insights",
+      "title": "Define typed metric",
+      "description": "Define a unit, aggregation, source, and dimensional contract without free-form executable queries.",
+      "operation": "command",
+      "recordType": "insight-metric",
+      "requiredFields": [
+        "sourceId",
+        "key",
+        "name",
+        "unit",
+        "aggregation",
+        "idempotencyKey"
+      ],
+      "engine": "additive",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "sourceId",
+          "key",
+          "name",
+          "unit",
+          "aggregation",
+          "idempotencyKey"
+        ],
+        "properties": {
+          "sourceId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Registered source ID."
+          },
+          "key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "description": "Stable metric key."
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "description": "Metric name."
+          },
+          "unit": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "description": "Unit label."
+          },
+          "aggregation": {
+            "type": "string",
+            "enum": [
+              "sum",
+              "count",
+              "minimum",
+              "maximum",
+              "average",
+              "last"
+            ],
+            "description": "Supported aggregation."
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9._:-]{16,200}$",
+            "description": "A retry-safe key unique to this logical mutation."
+          }
+        },
+        "additionalProperties": false
+      },
+      "exampleInput": {
+        "sourceId": "00000000-0000-4000-8000-000000000100",
+        "key": "mrr",
+        "name": "Monthly recurring revenue",
+        "unit": "USD-minor",
+        "aggregation": "sum",
+        "idempotencyKey": "insights.metric-define.example-0001"
+      },
+      "requiredScope": "write",
+      "mcpToolName": "insights_metric_define",
+      "cliExample": "supersuite action insights metric-define '{\"sourceId\":\"00000000-0000-4000-8000-000000000100\",\"key\":\"mrr\",\"name\":\"Monthly recurring revenue\",\"unit\":\"USD-minor\",\"aggregation\":\"sum\",\"idempotencyKey\":\"insights.metric-define.example-0001\"}'",
+      "risk": "low",
+      "destructive": false,
+      "externalEffect": "none",
+      "idempotent": true,
+      "requiresApproval": false,
+      "supportsDryRun": false,
+      "minimumRole": "member",
+      "backendMcpToolName": "insights_metric_define",
+      "productMcpToolName": "proofline_insights_metric_define",
+      "productCliExample": "proofline-insights action metric-define '{\"sourceId\":\"00000000-0000-4000-8000-000000000100\",\"key\":\"mrr\",\"name\":\"Monthly recurring revenue\",\"unit\":\"USD-minor\",\"aggregation\":\"sum\",\"idempotencyKey\":\"insights.metric-define.example-0001\"}'"
+    },
+    {
+      "id": "observation-import",
+      "moduleId": "insights",
+      "title": "Import approved observations",
+      "description": "Append exact timestamped integer or decimal observations after approval; existing observations are never overwritten.",
+      "operation": "command",
+      "recordType": "metric-observation",
+      "requiredFields": [
+        "metricId",
+        "observations",
+        "sourceRevision",
+        "idempotencyKey",
+        "dryRun"
+      ],
+      "engine": "additive",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "metricId",
+          "observations",
+          "sourceRevision",
+          "idempotencyKey",
+          "dryRun"
+        ],
+        "properties": {
+          "metricId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Metric ID."
+          },
+          "observations": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "maxItems": 2000,
+            "description": "Timestamped value and dimension maps."
+          },
+          "sourceRevision": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Immutable source revision or checksum."
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9._:-]{16,200}$",
+            "description": "A retry-safe key unique to this logical mutation."
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "When true, validate and return a preview without persisting or performing the effect."
+          },
+          "approval": {
+            "type": "object",
+            "description": "Attributed human approval of the exact requested effect.",
+            "required": [
+              "approved",
+              "approvedBy",
+              "approvedAt",
+              "decisionId",
+              "reason"
+            ],
+            "properties": {
+              "approved": {
+                "const": true
+              },
+              "approvedBy": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "approvedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "decisionId": {
+                "type": "string",
+                "minLength": 16,
+                "maxLength": 200,
+                "pattern": "^[A-Za-z0-9._:-]{16,200}$"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "exampleInput": {
+        "metricId": "00000000-0000-4000-8000-000000000100",
+        "observations": [
+          {
+            "observedAt": "2026-08-24T00:00:00.000Z",
+            "value": 1200,
+            "dimensions": {}
+          }
+        ],
+        "sourceRevision": "warehouse-2026-08-24",
+        "idempotencyKey": "insights.observation-import.example-0001",
+        "dryRun": true
+      },
+      "requiredScope": "write",
+      "mcpToolName": "insights_observation_import",
+      "cliExample": "supersuite action insights observation-import '{\"metricId\":\"00000000-0000-4000-8000-000000000100\",\"observations\":[{\"observedAt\":\"2026-08-24T00:00:00.000Z\",\"value\":1200,\"dimensions\":{}}],\"sourceRevision\":\"warehouse-2026-08-24\",\"idempotencyKey\":\"insights.observation-import.example-0001\",\"dryRun\":true}'",
+      "risk": "high",
+      "destructive": false,
+      "externalEffect": "none",
+      "idempotent": true,
+      "requiresApproval": true,
+      "supportsDryRun": true,
+      "minimumRole": "admin",
+      "backendMcpToolName": "insights_observation_import",
+      "productMcpToolName": "proofline_insights_observation_import",
+      "productCliExample": "proofline-insights action observation-import '{\"metricId\":\"00000000-0000-4000-8000-000000000100\",\"observations\":[{\"observedAt\":\"2026-08-24T00:00:00.000Z\",\"value\":1200,\"dimensions\":{}}],\"sourceRevision\":\"warehouse-2026-08-24\",\"idempotencyKey\":\"insights.observation-import.example-0001\",\"dryRun\":true}'"
+    },
+    {
+      "id": "dashboard-create",
+      "moduleId": "insights",
+      "title": "Create dashboard contract",
+      "description": "Create a purpose-bound dashboard before charts or narrative are attached.",
+      "operation": "command",
+      "recordType": "insight-dashboard",
+      "requiredFields": [
+        "name",
+        "purpose",
+        "audience",
+        "idempotencyKey"
+      ],
+      "engine": "additive",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "name",
+          "purpose",
+          "audience",
+          "idempotencyKey"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "description": "Dashboard name."
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "description": "Decision supported by this dashboard."
+          },
+          "audience": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "description": "Intended audience."
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9._:-]{16,200}$",
+            "description": "A retry-safe key unique to this logical mutation."
+          }
+        },
+        "additionalProperties": false
+      },
+      "exampleInput": {
+        "name": "Revenue health",
+        "purpose": "Review measured recurring revenue",
+        "audience": "Finance operators",
+        "idempotencyKey": "insights.dashboard-create.example-0001"
+      },
+      "requiredScope": "write",
+      "mcpToolName": "insights_dashboard_create",
+      "cliExample": "supersuite action insights dashboard-create '{\"name\":\"Revenue health\",\"purpose\":\"Review measured recurring revenue\",\"audience\":\"Finance operators\",\"idempotencyKey\":\"insights.dashboard-create.example-0001\"}'",
+      "risk": "low",
+      "destructive": false,
+      "externalEffect": "none",
+      "idempotent": true,
+      "requiresApproval": false,
+      "supportsDryRun": false,
+      "minimumRole": "member",
+      "backendMcpToolName": "insights_dashboard_create",
+      "productMcpToolName": "proofline_insights_dashboard_create",
+      "productCliExample": "proofline-insights action dashboard-create '{\"name\":\"Revenue health\",\"purpose\":\"Review measured recurring revenue\",\"audience\":\"Finance operators\",\"idempotencyKey\":\"insights.dashboard-create.example-0001\"}'"
+    },
+    {
+      "id": "chart-add",
+      "moduleId": "insights",
+      "title": "Add deterministic chart",
+      "description": "Bind a chart to one typed metric and explicit dimensions and time window.",
+      "operation": "command",
+      "recordType": "insight-chart",
+      "requiredFields": [
+        "dashboardId",
+        "metricId",
+        "visualization",
+        "window",
+        "idempotencyKey"
+      ],
+      "engine": "additive",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "dashboardId",
+          "metricId",
+          "visualization",
+          "window",
+          "idempotencyKey"
+        ],
+        "properties": {
+          "dashboardId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Dashboard ID."
+          },
+          "metricId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Metric ID."
+          },
+          "visualization": {
+            "type": "string",
+            "enum": [
+              "line",
+              "bar",
+              "number",
+              "table"
+            ],
+            "description": "Visualization."
+          },
+          "window": {
+            "type": "string",
+            "enum": [
+              "7d",
+              "30d",
+              "90d",
+              "365d",
+              "all"
+            ],
+            "description": "Time window."
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9._:-]{16,200}$",
+            "description": "A retry-safe key unique to this logical mutation."
+          }
+        },
+        "additionalProperties": false
+      },
+      "exampleInput": {
+        "dashboardId": "00000000-0000-4000-8000-000000000100",
+        "metricId": "00000000-0000-4000-8000-000000000101",
+        "visualization": "line",
+        "window": "30d",
+        "idempotencyKey": "insights.chart-add.example-0001"
+      },
+      "requiredScope": "write",
+      "mcpToolName": "insights_chart_add",
+      "cliExample": "supersuite action insights chart-add '{\"dashboardId\":\"00000000-0000-4000-8000-000000000100\",\"metricId\":\"00000000-0000-4000-8000-000000000101\",\"visualization\":\"line\",\"window\":\"30d\",\"idempotencyKey\":\"insights.chart-add.example-0001\"}'",
+      "risk": "low",
+      "destructive": false,
+      "externalEffect": "none",
+      "idempotent": true,
+      "requiresApproval": false,
+      "supportsDryRun": false,
+      "minimumRole": "member",
+      "backendMcpToolName": "insights_chart_add",
+      "productMcpToolName": "proofline_insights_chart_add",
+      "productCliExample": "proofline-insights action chart-add '{\"dashboardId\":\"00000000-0000-4000-8000-000000000100\",\"metricId\":\"00000000-0000-4000-8000-000000000101\",\"visualization\":\"line\",\"window\":\"30d\",\"idempotencyKey\":\"insights.chart-add.example-0001\"}'"
+    },
+    {
+      "id": "alert-rule-create",
+      "moduleId": "insights",
+      "title": "Create inert alert rule",
+      "description": "Persist a threshold rule that remains inert until a separately approved delivery integration is configured.",
+      "operation": "command",
+      "recordType": "insight-alert-rule",
+      "requiredFields": [
+        "metricId",
+        "operator",
+        "threshold",
+        "cooldownMinutes",
+        "idempotencyKey"
+      ],
+      "engine": "additive",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "metricId",
+          "operator",
+          "threshold",
+          "cooldownMinutes",
+          "idempotencyKey"
+        ],
+        "properties": {
+          "metricId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Metric ID."
+          },
+          "operator": {
+            "type": "string",
+            "enum": [
+              "gt",
+              "gte",
+              "lt",
+              "lte"
+            ],
+            "description": "Comparison operator."
+          },
+          "threshold": {
+            "type": "number",
+            "minimum": -1.7976931348623157e+308,
+            "maximum": 1.7976931348623157e+308,
+            "description": "Threshold value."
+          },
+          "cooldownMinutes": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 43200,
+            "description": "Minimum minutes between matches."
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9._:-]{16,200}$",
+            "description": "A retry-safe key unique to this logical mutation."
+          }
+        },
+        "additionalProperties": false
+      },
+      "exampleInput": {
+        "metricId": "00000000-0000-4000-8000-000000000100",
+        "operator": "lt",
+        "threshold": 1000,
+        "cooldownMinutes": 1440,
+        "idempotencyKey": "insights.alert-rule-create.example-0001"
+      },
+      "requiredScope": "write",
+      "mcpToolName": "insights_alert_rule_create",
+      "cliExample": "supersuite action insights alert-rule-create '{\"metricId\":\"00000000-0000-4000-8000-000000000100\",\"operator\":\"lt\",\"threshold\":1000,\"cooldownMinutes\":1440,\"idempotencyKey\":\"insights.alert-rule-create.example-0001\"}'",
+      "risk": "low",
+      "destructive": false,
+      "externalEffect": "none",
+      "idempotent": true,
+      "requiresApproval": false,
+      "supportsDryRun": false,
+      "minimumRole": "member",
+      "backendMcpToolName": "insights_alert_rule_create",
+      "productMcpToolName": "proofline_insights_alert_rule_create",
+      "productCliExample": "proofline-insights action alert-rule-create '{\"metricId\":\"00000000-0000-4000-8000-000000000100\",\"operator\":\"lt\",\"threshold\":1000,\"cooldownMinutes\":1440,\"idempotencyKey\":\"insights.alert-rule-create.example-0001\"}'"
+    },
+    {
+      "id": "snapshot-freeze",
+      "moduleId": "insights",
+      "title": "Freeze reporting snapshot",
+      "description": "Freeze exact observation IDs and an as-of clock after attributed approval.",
+      "operation": "command",
+      "recordType": "insight-snapshot",
+      "requiredFields": [
+        "dashboardId",
+        "asOf",
+        "evidenceIds",
+        "idempotencyKey",
+        "dryRun"
+      ],
+      "engine": "additive",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "dashboardId",
+          "asOf",
+          "evidenceIds",
+          "idempotencyKey",
+          "dryRun"
+        ],
+        "properties": {
+          "dashboardId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Dashboard ID."
+          },
+          "asOf": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Reporting clock."
+          },
+          "evidenceIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "maxItems": 500,
+            "description": "Tenant-owned record IDs selected as evidence."
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9._:-]{16,200}$",
+            "description": "A retry-safe key unique to this logical mutation."
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "When true, validate and return a preview without persisting or performing the effect."
+          },
+          "approval": {
+            "type": "object",
+            "description": "Attributed human approval of the exact requested effect.",
+            "required": [
+              "approved",
+              "approvedBy",
+              "approvedAt",
+              "decisionId",
+              "reason"
+            ],
+            "properties": {
+              "approved": {
+                "const": true
+              },
+              "approvedBy": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "approvedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "decisionId": {
+                "type": "string",
+                "minLength": 16,
+                "maxLength": 200,
+                "pattern": "^[A-Za-z0-9._:-]{16,200}$"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "exampleInput": {
+        "dashboardId": "00000000-0000-4000-8000-000000000100",
+        "asOf": "2026-08-24T12:00:00.000Z",
+        "evidenceIds": [
+          "00000000-0000-4000-8000-000000000101"
+        ],
+        "idempotencyKey": "insights.snapshot-freeze.example-0001",
+        "dryRun": true
+      },
+      "requiredScope": "write",
+      "mcpToolName": "insights_snapshot_freeze",
+      "cliExample": "supersuite action insights snapshot-freeze '{\"dashboardId\":\"00000000-0000-4000-8000-000000000100\",\"asOf\":\"2026-08-24T12:00:00.000Z\",\"evidenceIds\":[\"00000000-0000-4000-8000-000000000101\"],\"idempotencyKey\":\"insights.snapshot-freeze.example-0001\",\"dryRun\":true}'",
+      "risk": "high",
+      "destructive": false,
+      "externalEffect": "none",
+      "idempotent": true,
+      "requiresApproval": true,
+      "supportsDryRun": true,
+      "minimumRole": "admin",
+      "backendMcpToolName": "insights_snapshot_freeze",
+      "productMcpToolName": "proofline_insights_snapshot_freeze",
+      "productCliExample": "proofline-insights action snapshot-freeze '{\"dashboardId\":\"00000000-0000-4000-8000-000000000100\",\"asOf\":\"2026-08-24T12:00:00.000Z\",\"evidenceIds\":[\"00000000-0000-4000-8000-000000000101\"],\"idempotencyKey\":\"insights.snapshot-freeze.example-0001\",\"dryRun\":true}'"
+    },
+    {
+      "id": "anomaly-propose",
+      "moduleId": "insights",
+      "title": "Queue cited anomaly hypotheses",
+      "description": "Queue hypotheses grounded in exact observations and clocks; it cannot change metrics or alert rules.",
+      "operation": "ai",
+      "recordType": "ai-proposal-request",
+      "requiredFields": [
+        "metricId",
+        "question",
+        "evidenceIds",
+        "idempotencyKey",
+        "dryRun"
+      ],
+      "engine": "additive",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "metricId",
+          "question",
+          "evidenceIds",
+          "idempotencyKey",
+          "dryRun"
+        ],
+        "properties": {
+          "metricId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Metric ID."
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000,
+            "description": "Anomaly question."
+          },
+          "evidenceIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "maxItems": 500,
+            "description": "Tenant-owned record IDs selected as evidence."
+          },
+          "modelId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Optional expected workspace-configured model identifier. When omitted, the trusted workspace policy is used; never a credential."
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9._:-]{16,200}$",
+            "description": "A retry-safe key unique to this logical mutation."
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "When true, validate and return a preview without persisting or performing the effect."
+          },
+          "approval": {
+            "type": "object",
+            "description": "Attributed human approval of the exact requested effect.",
+            "required": [
+              "approved",
+              "approvedBy",
+              "approvedAt",
+              "decisionId",
+              "reason"
+            ],
+            "properties": {
+              "approved": {
+                "const": true
+              },
+              "approvedBy": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "approvedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "decisionId": {
+                "type": "string",
+                "minLength": 16,
+                "maxLength": 200,
+                "pattern": "^[A-Za-z0-9._:-]{16,200}$"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "exampleInput": {
+        "metricId": "00000000-0000-4000-8000-000000000100",
+        "question": "Which measured changes deserve investigation?",
+        "evidenceIds": [
+          "00000000-0000-4000-8000-000000000101"
+        ],
+        "idempotencyKey": "insights.anomaly-propose.example-0001",
+        "dryRun": true
+      },
+      "requiredScope": "ai",
+      "mcpToolName": "insights_anomaly_propose",
+      "cliExample": "supersuite action insights anomaly-propose '{\"metricId\":\"00000000-0000-4000-8000-000000000100\",\"question\":\"Which measured changes deserve investigation?\",\"evidenceIds\":[\"00000000-0000-4000-8000-000000000101\"],\"idempotencyKey\":\"insights.anomaly-propose.example-0001\",\"dryRun\":true}'",
+      "risk": "high",
+      "destructive": false,
+      "externalEffect": "model",
+      "idempotent": true,
+      "requiresApproval": true,
+      "supportsDryRun": true,
+      "minimumRole": "admin",
+      "backendMcpToolName": "insights_anomaly_propose",
+      "productMcpToolName": "proofline_insights_anomaly_propose",
+      "productCliExample": "proofline-insights action anomaly-propose '{\"metricId\":\"00000000-0000-4000-8000-000000000100\",\"question\":\"Which measured changes deserve investigation?\",\"evidenceIds\":[\"00000000-0000-4000-8000-000000000101\"],\"idempotencyKey\":\"insights.anomaly-propose.example-0001\",\"dryRun\":true}'"
+    },
+    {
+      "id": "narrative-propose",
+      "moduleId": "insights",
+      "title": "Queue dashboard narrative",
+      "description": "Queue a fact-versus-hypothesis narrative pinned to an immutable snapshot; it cannot publish itself.",
+      "operation": "ai",
+      "recordType": "ai-proposal-request",
+      "requiredFields": [
+        "snapshotId",
+        "audience",
+        "evidenceIds",
+        "idempotencyKey",
+        "dryRun"
+      ],
+      "engine": "additive",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "snapshotId",
+          "audience",
+          "evidenceIds",
+          "idempotencyKey",
+          "dryRun"
+        ],
+        "properties": {
+          "snapshotId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Snapshot ID."
+          },
+          "audience": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "description": "Intended reader."
+          },
+          "evidenceIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "maxItems": 500,
+            "description": "Tenant-owned record IDs selected as evidence."
+          },
+          "modelId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Optional expected workspace-configured model identifier. When omitted, the trusted workspace policy is used; never a credential."
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9._:-]{16,200}$",
+            "description": "A retry-safe key unique to this logical mutation."
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "When true, validate and return a preview without persisting or performing the effect."
+          },
+          "approval": {
+            "type": "object",
+            "description": "Attributed human approval of the exact requested effect.",
+            "required": [
+              "approved",
+              "approvedBy",
+              "approvedAt",
+              "decisionId",
+              "reason"
+            ],
+            "properties": {
+              "approved": {
+                "const": true
+              },
+              "approvedBy": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "approvedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "decisionId": {
+                "type": "string",
+                "minLength": 16,
+                "maxLength": 200,
+                "pattern": "^[A-Za-z0-9._:-]{16,200}$"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "exampleInput": {
+        "snapshotId": "00000000-0000-4000-8000-000000000100",
+        "audience": "Executive operators",
+        "evidenceIds": [
+          "00000000-0000-4000-8000-000000000101"
+        ],
+        "idempotencyKey": "insights.narrative-propose.example-0001",
+        "dryRun": true
+      },
+      "requiredScope": "ai",
+      "mcpToolName": "insights_narrative_propose",
+      "cliExample": "supersuite action insights narrative-propose '{\"snapshotId\":\"00000000-0000-4000-8000-000000000100\",\"audience\":\"Executive operators\",\"evidenceIds\":[\"00000000-0000-4000-8000-000000000101\"],\"idempotencyKey\":\"insights.narrative-propose.example-0001\",\"dryRun\":true}'",
+      "risk": "high",
+      "destructive": false,
+      "externalEffect": "model",
+      "idempotent": true,
+      "requiresApproval": true,
+      "supportsDryRun": true,
+      "minimumRole": "admin",
+      "backendMcpToolName": "insights_narrative_propose",
+      "productMcpToolName": "proofline_insights_narrative_propose",
+      "productCliExample": "proofline-insights action narrative-propose '{\"snapshotId\":\"00000000-0000-4000-8000-000000000100\",\"audience\":\"Executive operators\",\"evidenceIds\":[\"00000000-0000-4000-8000-000000000101\"],\"idempotencyKey\":\"insights.narrative-propose.example-0001\",\"dryRun\":true}'"
+    }
+  ]
+}
