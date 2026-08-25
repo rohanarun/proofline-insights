@@ -1,6 +1,6 @@
 {
   "name": "@managed-oss/proofline-insights",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Metrics, observations, dashboards, and immutable reporting clocks with cited explanations.",
   "type": "module",
   "license": "MIT",
