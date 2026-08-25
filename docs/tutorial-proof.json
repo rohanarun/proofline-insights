@@ -1,0 +1,169 @@
+{
+  "schema": "managed-oss-functional-tutorial.v1",
+  "product": {
+    "slug": "proofline-insights",
+    "name": "Proofline Insights",
+    "moduleId": "insights",
+    "version": "0.3.1",
+    "manifestSha256": "e5ba25cd54e7cc31f4c8f330d28d95bf33d0f30bf51cc5967e1a13f45d20eb93"
+  },
+  "backend": {
+    "release": "v0.4.4",
+    "commit": "148abce99b91d8b9fdc8aa41c3f0eba283796db4"
+  },
+  "testedAt": "2026-08-25T21:59:58.375Z",
+  "browser": {
+    "engine": "Chromium",
+    "version": "151.0.7922.174",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "functionalProof": {
+    "action": {
+      "id": "dashboard-create",
+      "title": "Create dashboard contract",
+      "httpStatus": 200
+    },
+    "record": {
+      "id": "5dd6560a-7153-4de5-8fc6-446b1b908eca",
+      "recordType": "insight-dashboard",
+      "title": "Proofline Insights tutorial workspace",
+      "state": "active"
+    },
+    "detail": {
+      "httpStatus": 200,
+      "matched": true
+    },
+    "assertions": [
+      "browser-authenticated-real-backend",
+      "guided-form-submitted",
+      "action-http-200",
+      "durable-record-returned",
+      "record-detail-http-200",
+      "exact-record-reopened-in-ui"
+    ]
+  },
+  "timeline": [
+    {
+      "stepId": "overview",
+      "observedLabel": "Meet Proofline Insights",
+      "observedFact": "Open the real Proofline Insights workspace and identify its core workflow.",
+      "startMs": 0,
+      "endMs": 2250
+    },
+    {
+      "stepId": "connect",
+      "observedLabel": "Connect the workspace",
+      "observedFact": "Authenticate this browser to the isolated shared backend and load durable records.",
+      "startMs": 2250,
+      "endMs": 5375
+    },
+    {
+      "stepId": "configure",
+      "observedLabel": "Create dashboard contract",
+      "observedFact": "Complete the guided, contract-validated form for the product's primary workflow.",
+      "startMs": 5375,
+      "endMs": 7875
+    },
+    {
+      "stepId": "execute",
+      "observedLabel": "Run the real workflow",
+      "observedFact": "Submit the action to the shared backend and require a successful durable result.",
+      "startMs": 7875,
+      "endMs": 10375
+    },
+    {
+      "stepId": "inspect",
+      "observedLabel": "Inspect the saved record",
+      "observedFact": "Search the product record view and reopen the exact record returned by the workflow.",
+      "startMs": 10375,
+      "endMs": 17000
+    }
+  ],
+  "explanation": {
+    "title": "Creating a Dashboard Contract in Proofline Insights",
+    "summary": "Walk through connecting the workspace, configuring and executing a dashboard contract, and inspecting the resulting durable record in Proofline Insights.",
+    "cues": [
+      {
+        "stepId": "overview",
+        "startMs": 0,
+        "endMs": 2250,
+        "label": "Meet Proofline Insights",
+        "subtitle": "Explore the Proofline Insights workspace and core dashboard actions."
+      },
+      {
+        "stepId": "connect",
+        "startMs": 2250,
+        "endMs": 5375,
+        "label": "Connect workspace",
+        "subtitle": "Connect the browser to the shared backend to access workspace actions."
+      },
+      {
+        "stepId": "configure",
+        "startMs": 5375,
+        "endMs": 7875,
+        "label": "Configure dashboard contract",
+        "subtitle": "Fill in the required dashboard name, purpose, audience, and idempotency key."
+      },
+      {
+        "stepId": "execute",
+        "startMs": 7875,
+        "endMs": 10375,
+        "label": "Execute workflow",
+        "subtitle": "Submit the creation contract and verify the completion confirmation."
+      },
+      {
+        "stepId": "inspect",
+        "startMs": 10375,
+        "endMs": 17000,
+        "label": "Inspect durable record",
+        "subtitle": "Open the records view and inspect the active dashboard record payload."
+      }
+    ],
+    "generation": {
+      "provider": "OpenRouter",
+      "model": "google/gemini-3.7-flash",
+      "requestedModel": "google/gemini-3.7-flash",
+      "responseModel": "google/gemini-3.7-flash",
+      "responseId": "gen-1787695194-aKNPVXHcCBQLAlMhWeAu",
+      "responseCreatedAt": "2026-08-25T21:59:54.000Z",
+      "input": {
+        "rawVideoSha256": "c3f526d7afc9f6b11676a5d020c79707f0098821577ebb012889f8e930371ff2",
+        "workflowFactsSha256": "4c58696f3b28dbeb7f1675645bdc14dac44a7f0d543362285bd4f91fdffb0bcd"
+      },
+      "usage": {
+        "promptTokens": 1564,
+        "completionTokens": 762,
+        "totalTokens": 2326
+      }
+    }
+  },
+  "video": {
+    "raw": {
+      "sha256": "c3f526d7afc9f6b11676a5d020c79707f0098821577ebb012889f8e930371ff2",
+      "codec": "h264",
+      "width": 1280,
+      "height": 720,
+      "durationSeconds": 17,
+      "sizeBytes": 385630
+    },
+    "final": {
+      "file": "docs/tutorial.mp4",
+      "sha256": "d64dff69a1e0fca2d985f65f797c08cfeffa5082291de751469fa485e9e67d92",
+      "codec": "h264",
+      "width": 1280,
+      "height": 720,
+      "durationSeconds": 17,
+      "sizeBytes": 383751
+    },
+    "subtitles": {
+      "file": "docs/tutorial.srt",
+      "sha256": "2d468aa2d6999040e9fa0c5ca5b5d8003763d729eb91c0713e91ecfcabc281fe",
+      "format": "SubRip"
+    },
+    "overlaysBurnedIn": true,
+    "silent": true
+  }
+}

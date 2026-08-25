@@ -1,0 +1,19 @@
+1
+00:00:00,000 --> 00:00:02,250
+Explore the Proofline Insights workspace and core dashboard actions.
+
+2
+00:00:02,250 --> 00:00:05,375
+Connect the browser to the shared backend to access workspace actions.
+
+3
+00:00:05,375 --> 00:00:07,875
+Fill in the required dashboard name, purpose, audience, and idempotency key.
+
+4
+00:00:07,875 --> 00:00:10,375
+Submit the creation contract and verify the completion confirmation.
+
+5
+00:00:10,375 --> 00:00:17,000
+Open the records view and inspect the active dashboard record payload.
