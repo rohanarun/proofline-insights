@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "release": {
-    "productVersion": "0.1.1",
+    "productVersion": "0.2.0",
     "backendRelease": "v0.4.2",
     "backendCommit": "20c4a704c77cbbbff1da995e1d91b937625a8aa4",
     "backendSourceSnapshotSha256": "d0b7b1079d4924eb7369c788a979a707d45bb63470290e6ac33ee5662d78f69f",
@@ -60,6 +60,192 @@
   "cleanRoom": {
     "statement": "Original clean-room implementation of the business intelligence software category, designed and written independently.",
     "sourceBoundary": "Public category behavior informed requirements; implementation and product identity are original."
+  },
+  "experience": {
+    "releaseBoundary": "Complete for every typed action declared by this product manifest; it does not claim feature parity with unrelated third-party products.",
+    "headline": "Metrics",
+    "primaryActionId": "source-register",
+    "quickActionIds": [
+      "source-register",
+      "metric-define",
+      "observation-import",
+      "dashboard-create"
+    ],
+    "navigation": [
+      "Overview",
+      "Records",
+      "Workflows",
+      "AI assistance",
+      "Settings"
+    ],
+    "workflowGroups": [
+      {
+        "name": "Create and capture",
+        "actionIds": [
+          "source-register",
+          "dashboard-create",
+          "alert-rule-create"
+        ]
+      },
+      {
+        "name": "Operate and update",
+        "actionIds": [
+          "metric-define",
+          "chart-add"
+        ]
+      },
+      {
+        "name": "Review and approve",
+        "actionIds": [
+          "observation-import"
+        ]
+      },
+      {
+        "name": "Inspect and report",
+        "actionIds": [
+          "snapshot-freeze"
+        ]
+      },
+      {
+        "name": "AI assistance",
+        "actionIds": [
+          "anomaly-propose",
+          "narrative-propose"
+        ]
+      }
+    ],
+    "metrics": [
+      {
+        "label": "Typed actions",
+        "value": 9
+      },
+      {
+        "label": "Record types",
+        "value": 9
+      },
+      {
+        "label": "AI workflows",
+        "value": 2
+      },
+      {
+        "label": "Review gates",
+        "value": 1
+      }
+    ],
+    "sampleRecords": [
+      {
+        "id": "demo-insights-01",
+        "moduleId": "insights",
+        "recordType": "insight-source",
+        "title": "Insight Source Launch",
+        "state": "active",
+        "createdAt": "2026-08-18T13:30:00.000Z",
+        "updatedAt": "2026-08-25T13:15:00.000Z",
+        "data": {
+          "owner": "Operations",
+          "evidenceStatus": "verified",
+          "nextStep": "Register governed data source"
+        }
+      },
+      {
+        "id": "demo-insights-02",
+        "moduleId": "insights",
+        "recordType": "insight-metric",
+        "title": "Insight Metric Operations",
+        "state": "in review",
+        "createdAt": "2026-08-19T13:30:00.000Z",
+        "updatedAt": "2026-08-25T12:15:00.000Z",
+        "data": {
+          "owner": "Product",
+          "evidenceStatus": "current",
+          "nextStep": "Define typed metric"
+        }
+      },
+      {
+        "id": "demo-insights-03",
+        "moduleId": "insights",
+        "recordType": "metric-observation",
+        "title": "Metric Observation Evidence",
+        "state": "ready",
+        "createdAt": "2026-08-20T13:30:00.000Z",
+        "updatedAt": "2026-08-25T11:15:00.000Z",
+        "data": {
+          "owner": "Operations",
+          "evidenceStatus": "current",
+          "nextStep": "Import approved observations"
+        }
+      },
+      {
+        "id": "demo-insights-04",
+        "moduleId": "insights",
+        "recordType": "insight-dashboard",
+        "title": "Insight Dashboard Review",
+        "state": "scheduled",
+        "createdAt": "2026-08-21T13:30:00.000Z",
+        "updatedAt": "2026-08-25T10:15:00.000Z",
+        "data": {
+          "owner": "Product",
+          "evidenceStatus": "verified",
+          "nextStep": "Create dashboard contract"
+        }
+      },
+      {
+        "id": "demo-insights-05",
+        "moduleId": "insights",
+        "recordType": "insight-chart",
+        "title": "Insight Chart Pilot",
+        "state": "draft",
+        "createdAt": "2026-08-22T13:30:00.000Z",
+        "updatedAt": "2026-08-25T09:15:00.000Z",
+        "data": {
+          "owner": "Operations",
+          "evidenceStatus": "current",
+          "nextStep": "Add deterministic chart"
+        }
+      },
+      {
+        "id": "demo-insights-06",
+        "moduleId": "insights",
+        "recordType": "insight-alert-rule",
+        "title": "Insight Alert Rule Archive",
+        "state": "complete",
+        "createdAt": "2026-08-23T13:30:00.000Z",
+        "updatedAt": "2026-08-25T08:15:00.000Z",
+        "data": {
+          "owner": "Product",
+          "evidenceStatus": "current",
+          "nextStep": "Create inert alert rule"
+        }
+      },
+      {
+        "id": "demo-insights-07",
+        "moduleId": "insights",
+        "recordType": "insight-snapshot",
+        "title": "Insight Snapshot Launch",
+        "state": "active",
+        "createdAt": "2026-08-24T13:30:00.000Z",
+        "updatedAt": "2026-08-25T07:15:00.000Z",
+        "data": {
+          "owner": "Operations",
+          "evidenceStatus": "verified",
+          "nextStep": "Freeze reporting snapshot"
+        }
+      },
+      {
+        "id": "demo-insights-08",
+        "moduleId": "insights",
+        "recordType": "ai-proposal-request",
+        "title": "Ai Proposal Request Operations",
+        "state": "in review",
+        "createdAt": "2026-08-25T13:30:00.000Z",
+        "updatedAt": "2026-08-25T06:15:00.000Z",
+        "data": {
+          "owner": "Product",
+          "evidenceStatus": "current",
+          "nextStep": "Queue cited anomaly hypotheses"
+        }
+      }
+    ]
   },
   "actions": [
     {
